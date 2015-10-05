@@ -14,11 +14,8 @@ using namespace std;
 
 namespace Regulator {
 
-template<class T>
-class Value;
-
-template<class T>
-class Modification;
+template<class T> class Value;
+template<class T> class Modification;
 
 template<class T>
 class Register {
@@ -31,11 +28,14 @@ public:
 	constexpr Register() : _bits(ValueType::_default_bits) {}
 	constexpr Register(AccessType bits) : _bits(bits) {}
 	constexpr Register(ValueType value) : _bits(value._bits) {}
+	// TODO(palchak): Delete copy and move constructors
 
 	constexpr ValueType value() const { return ValueType(_bits); }
 	constexpr ValueType default_value() const { return ValueType(); }
+
 	inline ThisType& operator= (AccessType bits) { _bits = bits; return *this; }
 	inline ThisType& operator= (ValueType value) { _bits = value._bits; return *this; }
+	// TODO(palchak): Delete copy assignment operator
 
 	constexpr ModificationType modification() const { return ModificationType {*const_cast<ThisType*>(this)}; }
 
@@ -108,9 +108,28 @@ void print_status() {
 	printf("REG = 0x%08X\n", mem32);
 }
 
+struct Value32 {
+	constexpr Value32(uint32_t v) : value(v) {};
+	constexpr Value32&& with_rvalue(uint32_t v) && {
+		return Value32{value + v};
+	}
+	constexpr Value32 with_lvalue(uint32_t v) & {
+		return Value32{value + v}
+	}
+	uint32_t value;
+};
+
+struct Reg32 {
+	constexpr Reg32() : _value(0) {}
+	constexpr Value32 value() { return _value; }
+	constexpr Value32& lvalue() { return _value; }
+	Value32 _value;
+};
+
 using namespace Regulator;
 
 int main(void) {
+#if 0
 	Register<uint32_t> *r0 = new(&mem32) Register<uint32_t>(0xFACADE);
 	print_status();
 	for(int i=0; i<8; i++) {
@@ -129,6 +148,23 @@ int main(void) {
 				.apply();
 		print_status();
 	}
+#endif
+	Reg32 r0;
+	Value32 v0 = r0.value();
+
+	uint32_t t1 = r0.value().with_lvalue(1).value;
+	uint32_t t2 = r0.value().with_rvalue(2).value;
+	uint32_t t3 = v0.with_lvalue(3).value;
+	utin32_t t4 = v0.with_rvalue(3).value;
+
+	Value32& v1 = v0.with_rvalue(5);
+
+	uint32_t t5 = r0.lvalue().with_lvalue(1).value;
+	uint32_t t6 = r0.lvalue().with_rvalue(2).value;
+	uint32_t t7 = v0.with_lvalue(3).value;
+	utin32_t t8 = v0.with_rvalue(3).value;
+
+	printf("Test", t1, t2, t3, t4, t5, t6, t7, t8, v0, v1);
 }
 
 

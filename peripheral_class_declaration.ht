@@ -1,0 +1,5 @@
+
+// ${PERIPHERAL_TYPE} registers
+struct ${PERIPHERAL_TYPE} {
+${REGISTER_DECLARATIONS}
+}; // ${PERIPHERAL_TYPE} registers

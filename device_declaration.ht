@@ -1,0 +1,15 @@
+#ifndef ${INCLUDE_GUARD_TOKEN}
+#define ${INCLUDE_GUARD_TOKEN}
+
+#include "data/sbf/sbf_register.h"
+
+${NAMESPACE_START}
+
+${PERIPHERAL_CLASS_DECLARATIONS}
+
+${PERIPHERAL_DECLARATIONS}
+
+${NAMESPACE_END}
+
+
+#endif // ${INCLUDE_GUARD_TOKEN}
