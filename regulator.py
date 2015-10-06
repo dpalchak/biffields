@@ -198,10 +198,10 @@ class Peripheral(object):
                     raise RuntimeError('Unaligned padding required')
                 pad_word_count = pad_byte_count / 4
                 if pad_word_count > 1:
-                    reg_decls += indent("//  Alignment padding\nSBF_REGISTER_RSVD(__padding_0x%X_to_0x%X, uint32_t, %u)\n" % \
+                    reg_decls += indent("//  Alignment padding\nSBF_REG_ARRAY_RSVD(__padding_0x%X_to_0x%X, uint32_t, %u)\n" % \
                         (current_offset, target_offset - 4, pad_word_count))
                 else:
-                    reg_decls += indent("//  Alignment padding\nSBF_REGISTER_RSVD(__padding_0x%X, uint32_t, 1)\n" % \
+                    reg_decls += indent("//  Alignment padding\nSBF_REGISTER_RSVD(__padding_0x%X, uint32_t)\n" % \
                         (current_offset))
                 current_offset += pad_byte_count
             reg = reg_map[target_offset]

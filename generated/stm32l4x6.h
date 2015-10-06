@@ -1,7 +1,7 @@
 #ifndef _STM32L4x6_H_
 #define _STM32L4x6_H_
 
-//#include "data/sbf/sbf_register.h"
+#include "data/sbf/sbf_register.h"
 
 namespace Stm32l4x6 {
 
@@ -35,7 +35,7 @@ struct Adc {
         SBF_FIELD(addrdy_mst, 0:0, bool) 		// ADDRDY_MST
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x4, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x4, uint32_t)
     // ADC common control register
     // Offset +0x8
     SBF_REGISTER_RW(ccr, uint32_t, 0x0,
@@ -245,7 +245,7 @@ struct Can {
         SBF_FIELD(brp, 9:0, unsigned) 		// BRP
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x20_to_0x17C, uint32_t, 88)
+    SBF_REG_ARRAY_RSVD(__padding_0x20_to_0x17C, uint32_t, 88)
     // TX mailbox identifier register
     // Offset +0x180
     SBF_REGISTER_RW(ti0r, uint32_t, 0x0,
@@ -405,7 +405,7 @@ struct Can {
         SBF_FIELD(data4, 7:0, unsigned) 		// DATA4
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x1D0_to_0x23C, uint32_t, 28)
+    SBF_REG_ARRAY_RSVD(__padding_0x1D0_to_0x23C, uint32_t, 28)
     // Filter bank 0 register 1
     // Offset +0x240
     SBF_REGISTER_RW(f0r1, uint32_t, 0x0,
@@ -2484,7 +2484,7 @@ struct Crc {
         SBF_FIELD(reset, 0:0, bool) 		// RESET bit
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0xC, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0xC, uint32_t)
     // Initial CRC value
     // Offset +0x10
     SBF_REGISTER_RW(init, uint32_t, 0xFFFFFFFF,
@@ -2729,7 +2729,7 @@ struct Dfsdm {
         SBF_FIELD(indat0, 15:0, unsigned) 		// INDAT0
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x14_to_0x1C, uint32_t, 3)
+    SBF_REG_ARRAY_RSVD(__padding_0x14_to_0x1C, uint32_t, 3)
     // CHCFG1R1
     // Offset +0x20
     SBF_REGISTER_RW(chcfg1r1, uint32_t, 0x0,
@@ -2768,7 +2768,7 @@ struct Dfsdm {
         SBF_FIELD(indat0, 15:0, unsigned) 		// INDAT0
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x34_to_0x3C, uint32_t, 3)
+    SBF_REG_ARRAY_RSVD(__padding_0x34_to_0x3C, uint32_t, 3)
     // CHCFG2R1
     // Offset +0x40
     SBF_REGISTER_RW(chcfg2r1, uint32_t, 0x0,
@@ -2807,7 +2807,7 @@ struct Dfsdm {
         SBF_FIELD(indat0, 15:0, unsigned) 		// INDAT0
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x54_to_0x5C, uint32_t, 3)
+    SBF_REG_ARRAY_RSVD(__padding_0x54_to_0x5C, uint32_t, 3)
     // CHCFG3R1
     // Offset +0x60
     SBF_REGISTER_RW(chcfg3r1, uint32_t, 0x0,
@@ -2846,7 +2846,7 @@ struct Dfsdm {
         SBF_FIELD(indat0, 15:0, unsigned) 		// INDAT0
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x74_to_0x7C, uint32_t, 3)
+    SBF_REG_ARRAY_RSVD(__padding_0x74_to_0x7C, uint32_t, 3)
     // CHCFG4R1
     // Offset +0x80
     SBF_REGISTER_RW(chcfg4r1, uint32_t, 0x0,
@@ -2885,7 +2885,7 @@ struct Dfsdm {
         SBF_FIELD(indat0, 15:0, unsigned) 		// INDAT0
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x94_to_0x9C, uint32_t, 3)
+    SBF_REG_ARRAY_RSVD(__padding_0x94_to_0x9C, uint32_t, 3)
     // CHCFG5R1
     // Offset +0xA0
     SBF_REGISTER_RW(chcfg5r1, uint32_t, 0x0,
@@ -2924,7 +2924,7 @@ struct Dfsdm {
         SBF_FIELD(indat0, 15:0, unsigned) 		// INDAT0
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0xB4_to_0xBC, uint32_t, 3)
+    SBF_REG_ARRAY_RSVD(__padding_0xB4_to_0xBC, uint32_t, 3)
     // CHCFG6R1
     // Offset +0xC0
     SBF_REGISTER_RW(chcfg6r1, uint32_t, 0x0,
@@ -2963,7 +2963,7 @@ struct Dfsdm {
         SBF_FIELD(indat0, 15:0, unsigned) 		// INDAT0
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0xD4_to_0xDC, uint32_t, 3)
+    SBF_REG_ARRAY_RSVD(__padding_0xD4_to_0xDC, uint32_t, 3)
     // CHCFG7R1
     // Offset +0xE0
     SBF_REGISTER_RW(chcfg7r1, uint32_t, 0x0,
@@ -3002,7 +3002,7 @@ struct Dfsdm {
         SBF_FIELD(indat0, 15:0, unsigned) 		// INDAT0
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0xF4_to_0xFC, uint32_t, 3)
+    SBF_REG_ARRAY_RSVD(__padding_0xF4_to_0xFC, uint32_t, 3)
     // control register 1
     // Offset +0x100
     SBF_REGISTER_RW(dfsdm0_cr1, uint32_t, 0x0,
@@ -3122,7 +3122,7 @@ struct Dfsdm {
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x13C_to_0x1FC, uint32_t, 49)
+    SBF_REG_ARRAY_RSVD(__padding_0x13C_to_0x1FC, uint32_t, 49)
     // control register 1
     // Offset +0x200
     SBF_REGISTER_RW(dfsdm1_cr1, uint32_t, 0x0,
@@ -3242,7 +3242,7 @@ struct Dfsdm {
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x23C_to_0x2FC, uint32_t, 49)
+    SBF_REG_ARRAY_RSVD(__padding_0x23C_to_0x2FC, uint32_t, 49)
     // control register 1
     // Offset +0x300
     SBF_REGISTER_RW(dfsdm2_cr1, uint32_t, 0x0,
@@ -3362,7 +3362,7 @@ struct Dfsdm {
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x33C_to_0x3FC, uint32_t, 49)
+    SBF_REG_ARRAY_RSVD(__padding_0x33C_to_0x3FC, uint32_t, 49)
     // control register 1
     // Offset +0x400
     SBF_REGISTER_RW(dfsdm3_cr1, uint32_t, 0x0,
@@ -3583,7 +3583,7 @@ struct Dma {
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x18, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x18, uint32_t)
     // channel x configuration register
     // Offset +0x1C
     SBF_REGISTER_RW(ccr2, uint32_t, 0x0,
@@ -3616,7 +3616,7 @@ struct Dma {
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x2C, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x2C, uint32_t)
     // channel x configuration register
     // Offset +0x30
     SBF_REGISTER_RW(ccr3, uint32_t, 0x0,
@@ -3649,7 +3649,7 @@ struct Dma {
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x40, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x40, uint32_t)
     // channel x configuration register
     // Offset +0x44
     SBF_REGISTER_RW(ccr4, uint32_t, 0x0,
@@ -3682,7 +3682,7 @@ struct Dma {
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x54, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x54, uint32_t)
     // channel x configuration register
     // Offset +0x58
     SBF_REGISTER_RW(ccr5, uint32_t, 0x0,
@@ -3715,7 +3715,7 @@ struct Dma {
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x68, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x68, uint32_t)
     // channel x configuration register
     // Offset +0x6C
     SBF_REGISTER_RW(ccr6, uint32_t, 0x0,
@@ -3748,7 +3748,7 @@ struct Dma {
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x7C, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x7C, uint32_t)
     // channel x configuration register
     // Offset +0x80
     SBF_REGISTER_RW(ccr7, uint32_t, 0x0,
@@ -3781,7 +3781,7 @@ struct Dma {
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x90_to_0xA4, uint32_t, 6)
+    SBF_REG_ARRAY_RSVD(__padding_0x90_to_0xA4, uint32_t, 6)
     // channel selection register
     // Offset +0xA8
     SBF_REGISTER_RW(cselr, uint32_t, 0x0,
@@ -3976,7 +3976,7 @@ struct Exti {
         SBF_FIELD(pr0, 0:0, bool) 		// Pending bit 0
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x18_to_0x1C, uint32_t, 2)
+    SBF_REG_ARRAY_RSVD(__padding_0x18_to_0x1C, uint32_t, 2)
     // Interrupt mask register
     // Offset +0x20
     SBF_REGISTER_RW(imr2, uint32_t, 0xFFFFFF87,
@@ -4157,7 +4157,7 @@ struct Fsmc {
         SBF_FIELD(addset, 3:0, unsigned) 		// ADDSET
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x20_to_0x7C, uint32_t, 24)
+    SBF_REG_ARRAY_RSVD(__padding_0x20_to_0x7C, uint32_t, 24)
     // PC Card/NAND Flash control register 3
     // Offset +0x80
     SBF_REGISTER_RW(pcr, uint32_t, 0x18,
@@ -4198,14 +4198,14 @@ struct Fsmc {
         SBF_FIELD(attsetx, 7:0, unsigned) 		// ATTSETx
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x90, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x90, uint32_t)
     // ECC result register 3
     // Offset +0x94
     SBF_REGISTER_RO(eccr, uint32_t, 0x0,
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x98_to_0x100, uint32_t, 27)
+    SBF_REG_ARRAY_RSVD(__padding_0x98_to_0x100, uint32_t, 27)
     // SRAM/NOR-Flash write timing registers 1
     // Offset +0x104
     SBF_REGISTER_RW(bwtr1, uint32_t, 0xFFFFFFF,
@@ -4217,7 +4217,7 @@ struct Fsmc {
         SBF_FIELD(addset, 3:0, unsigned) 		// ADDSET
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x108, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x108, uint32_t)
     // SRAM/NOR-Flash write timing registers 2
     // Offset +0x10C
     SBF_REGISTER_RW(bwtr2, uint32_t, 0xFFFFFFF,
@@ -4229,7 +4229,7 @@ struct Fsmc {
         SBF_FIELD(addset, 3:0, unsigned) 		// ADDSET
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x110, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x110, uint32_t)
     // SRAM/NOR-Flash write timing registers 3
     // Offset +0x114
     SBF_REGISTER_RW(bwtr3, uint32_t, 0xFFFFFFF,
@@ -4241,7 +4241,7 @@ struct Fsmc {
         SBF_FIELD(addset, 3:0, unsigned) 		// ADDSET
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x118, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x118, uint32_t)
     // SRAM/NOR-Flash write timing registers 4
     // Offset +0x11C
     SBF_REGISTER_RW(bwtr4, uint32_t, 0xFFFFFFF,
@@ -4289,7 +4289,7 @@ struct Firewall {
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x18_to_0x1C, uint32_t, 2)
+    SBF_REG_ARRAY_RSVD(__padding_0x18_to_0x1C, uint32_t, 2)
     // Configuration register
     // Offset +0x20
     SBF_REGISTER_RW(cr, uint32_t, 0x0,
@@ -4376,7 +4376,7 @@ struct Flash {
         SBF_FIELD(addr_ecc, 18:0, unsigned) 		// ECC fail address
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x1C, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x1C, uint32_t)
     // Flash option register
     // Offset +0x20
     SBF_REGISTER_RW(optr, uint32_t, 0xF0000000,
@@ -4418,7 +4418,7 @@ struct Flash {
         SBF_FIELD(wrp1b_end, 7:0, unsigned) 		// Bank 1 WRP second area B start offset
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x34_to_0x40, uint32_t, 4)
+    SBF_REG_ARRAY_RSVD(__padding_0x34_to_0x40, uint32_t, 4)
     // Flash Bank 2 PCROP Start address register
     // Offset +0x44
     SBF_REGISTER_RW(pcrop2sr, uint32_t, 0xFFFF0000,
@@ -4854,7 +4854,7 @@ struct Lcd {
         SBF_FIELD(sofc, 1:1, bool) 		// Start of frame flag clear
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x10, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x10, uint32_t)
     // display memory
     // Offset +0x14
     SBF_REGISTER_RW(ram_com0, uint32_t, 0x0,
@@ -4891,7 +4891,7 @@ struct Lcd {
         SBF_FIELD(s00, 0:0, bool) 		// S00
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x18, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x18, uint32_t)
     // display memory
     // Offset +0x1C
     SBF_REGISTER_RW(ram_com1, uint32_t, 0x0,
@@ -4929,7 +4929,7 @@ struct Lcd {
         SBF_FIELD(s00, 0:0, bool) 		// S00
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x20, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x20, uint32_t)
     // display memory
     // Offset +0x24
     SBF_REGISTER_RW(ram_com2, uint32_t, 0x0,
@@ -4967,7 +4967,7 @@ struct Lcd {
         SBF_FIELD(s00, 0:0, bool) 		// S00
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x28, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x28, uint32_t)
     // display memory
     // Offset +0x2C
     SBF_REGISTER_RW(ram_com3, uint32_t, 0x0,
@@ -5005,7 +5005,7 @@ struct Lcd {
         SBF_FIELD(s00, 0:0, bool) 		// S00
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x30, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x30, uint32_t)
     // display memory
     // Offset +0x34
     SBF_REGISTER_RW(ram_com4, uint32_t, 0x0,
@@ -5043,7 +5043,7 @@ struct Lcd {
         SBF_FIELD(s00, 0:0, bool) 		// S00
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x38, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x38, uint32_t)
     // display memory
     // Offset +0x3C
     SBF_REGISTER_RW(ram_com5, uint32_t, 0x0,
@@ -5081,7 +5081,7 @@ struct Lcd {
         SBF_FIELD(s00, 0:0, bool) 		// S00
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x40, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x40, uint32_t)
     // display memory
     // Offset +0x44
     SBF_REGISTER_RW(ram_com6, uint32_t, 0x0,
@@ -5119,7 +5119,7 @@ struct Lcd {
         SBF_FIELD(s00, 0:0, bool) 		// S00
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x48, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x48, uint32_t)
     // display memory
     // Offset +0x4C
     SBF_REGISTER_RW(ram_com7, uint32_t, 0x0,
@@ -5241,14 +5241,14 @@ struct Lptim {
 // Nvic registers
 struct Nvic {
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x0, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x0, uint32_t)
     // Interrupt Controller Type Register
     // Offset +0x4
     SBF_REGISTER_RO(ictr, uint32_t, 0x0,
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x8_to_0xFC, uint32_t, 62)
+    SBF_REG_ARRAY_RSVD(__padding_0x8_to_0xFC, uint32_t, 62)
     // Interrupt Set-Enable Register
     // Offset +0x100
     SBF_REGISTER_RW(iser0, uint32_t, 0x0,
@@ -5265,7 +5265,7 @@ struct Nvic {
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x10C_to_0x17C, uint32_t, 29)
+    SBF_REG_ARRAY_RSVD(__padding_0x10C_to_0x17C, uint32_t, 29)
     // Interrupt Clear-Enable Register
     // Offset +0x180
     SBF_REGISTER_RW(icer0, uint32_t, 0x0,
@@ -5282,7 +5282,7 @@ struct Nvic {
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x18C_to_0x1FC, uint32_t, 29)
+    SBF_REG_ARRAY_RSVD(__padding_0x18C_to_0x1FC, uint32_t, 29)
     // Interrupt Set-Pending Register
     // Offset +0x200
     SBF_REGISTER_RW(ispr0, uint32_t, 0x0,
@@ -5299,7 +5299,7 @@ struct Nvic {
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x20C_to_0x27C, uint32_t, 29)
+    SBF_REG_ARRAY_RSVD(__padding_0x20C_to_0x27C, uint32_t, 29)
     // Interrupt Clear-Pending Register
     // Offset +0x280
     SBF_REGISTER_RW(icpr0, uint32_t, 0x0,
@@ -5316,7 +5316,7 @@ struct Nvic {
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x28C_to_0x2FC, uint32_t, 29)
+    SBF_REG_ARRAY_RSVD(__padding_0x28C_to_0x2FC, uint32_t, 29)
     // Interrupt Active Bit Register
     // Offset +0x300
     SBF_REGISTER_RO(iabr0, uint32_t, 0x0,
@@ -5333,7 +5333,7 @@ struct Nvic {
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x30C_to_0x3FC, uint32_t, 61)
+    SBF_REG_ARRAY_RSVD(__padding_0x30C_to_0x3FC, uint32_t, 61)
     // Interrupt Priority Register
     // Offset +0x400
     SBF_REGISTER_RW(ipr0, uint32_t, 0x0,
@@ -5503,7 +5503,7 @@ struct Nvic {
         SBF_FIELD(ipr_n0, 7:0, unsigned) 		// IPR_N0
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x454_to_0xEFC, uint32_t, 683)
+    SBF_REG_ARRAY_RSVD(__padding_0x454_to_0xEFC, uint32_t, 683)
     // Software Triggered Interrupt Register
     // Offset +0xF00
     SBF_REGISTER_WO(stir, uint32_t, 0x0,
@@ -5543,7 +5543,7 @@ struct Opamp {
         SBF_FIELD(trimlpoffsetn, 4:0, unsigned) 		// Trim for NMOS differential pairs
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0xC, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0xC, uint32_t)
     // OPAMP2 control/status register
     // Offset +0x10
     SBF_REGISTER_RW(opamp2_csr, uint32_t, 0x0,
@@ -5666,7 +5666,7 @@ struct Pwr {
         SBF_FIELD(wuf1, 0:0, bool) 		// Clear wakeup flag 1
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x1C, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x1C, uint32_t)
     // Power Port A pull-up control register
     // Offset +0x20
     SBF_REGISTER_RW(pucra, uint32_t, 0x0,
@@ -6191,7 +6191,7 @@ struct Rcc {
         SBF_FIELD(lsirdyc, 0:0, bool) 		// LSI ready interrupt clear
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x24, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x24, uint32_t)
     // AHB1 peripheral reset register
     // Offset +0x28
     SBF_REGISTER_RW(ahb1rstr, uint32_t, 0x0,
@@ -6224,7 +6224,7 @@ struct Rcc {
         SBF_FIELD(fmcrst, 0:0, bool) 		// Flexible memory controller reset
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x34, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x34, uint32_t)
     // APB1 peripheral reset register 1
     // Offset +0x38
     SBF_REGISTER_RW(apb1rstr1, uint32_t, 0x0,
@@ -6274,7 +6274,7 @@ struct Rcc {
         SBF_FIELD(syscfgrst, 0:0, bool) 		// System configuration (SYSCFG) reset
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x44, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x44, uint32_t)
     // AHB1 peripheral clock enable register
     // Offset +0x48
     SBF_REGISTER_RW(ahb1enr, uint32_t, 0x100,
@@ -6307,7 +6307,7 @@ struct Rcc {
         SBF_FIELD(fmcen, 0:0, bool) 		// Flexible memory controller clock enable
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x54, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x54, uint32_t)
     // APB1ENR1
     // Offset +0x58
     SBF_REGISTER_RW(apb1enr1, uint32_t, 0x0,
@@ -6359,7 +6359,7 @@ struct Rcc {
         SBF_FIELD(syscfgen, 0:0, bool) 		// SYSCFG clock enable
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x64, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x64, uint32_t)
     // AHB1 peripheral clocks enable in Sleep and Stop modes register
     // Offset +0x68
     SBF_REGISTER_RW(ahb1smenr, uint32_t, 0x11303,
@@ -6394,7 +6394,7 @@ struct Rcc {
         SBF_FIELD(fmcsmen, 0:0, bool) 		// Flexible memory controller clocks enable during Sleep and Stop modes
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x74, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x74, uint32_t)
     // APB1SMENR1
     // Offset +0x78
     SBF_REGISTER_RW(apb1smenr1, uint32_t, 0xF2FECA3F,
@@ -6445,7 +6445,7 @@ struct Rcc {
         SBF_FIELD(syscfgsmen, 0:0, bool) 		// SYSCFG clocks enable during Sleep and Stop modes
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x84, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x84, uint32_t)
     // CCIPR
     // Offset +0x88
     SBF_REGISTER_RW(ccipr, uint32_t, 0x0,
@@ -6468,7 +6468,7 @@ struct Rcc {
         SBF_FIELD(usart1sel, 1:0, unsigned) 		// USART1 clock source selection
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x8C, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x8C, uint32_t)
     // BDCR
     // Offset +0x90
     SBF_REGISTER_RW(bdcr, uint32_t, 0x0,
@@ -6612,7 +6612,7 @@ struct Rtc {
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x18, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x18, uint32_t)
     // alarm A register
     // Offset +0x1C
     SBF_REGISTER_RW(alrmar, uint32_t, 0x0,
@@ -6737,7 +6737,7 @@ struct Rtc {
     )
     // option register
     // Offset +0x4C
-    SBF_REGISTER_RW(optr, uint32_t, 0x0,
+    SBF_REGISTER_RW(or, uint32_t, 0x0,
         SBF_FIELD(rtc_out_rmp, 1:1, bool) 		// RTC_OUT remap
         SBF_FIELD(rtc_alarm_type, 0:0, bool) 		// RTC_ALARM on PC13 output type
     )
@@ -6908,7 +6908,7 @@ struct Rtc {
 // Sai registers
 struct Sai {
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x0, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x0, uint32_t)
     // AConfiguration register 1
     // Offset +0x4
     SBF_REGISTER_RW(acr1, uint32_t, 0x40,
@@ -7242,14 +7242,14 @@ struct Sdio {
         SBF_FIELD(ccrcfailie, 0:0, bool) 		// Command CRC fail interrupt enable
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x40_to_0x44, uint32_t, 2)
+    SBF_REG_ARRAY_RSVD(__padding_0x40_to_0x44, uint32_t, 2)
     // FIFO counter register
     // Offset +0x48
     SBF_REGISTER_RO(fifocnt, uint32_t, 0x0,
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x4C_to_0x7C, uint32_t, 13)
+    SBF_REG_ARRAY_RSVD(__padding_0x4C_to_0x7C, uint32_t, 13)
     // data FIFO register
     // Offset +0x80
     SBF_REGISTER_RW(fifo, uint32_t, 0x0,
@@ -7351,7 +7351,7 @@ struct Swpmi {
         SBF_NO_FIELDS
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x8, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x8, uint32_t)
     // SWPMI Interrupt and Status register
     // Offset +0xC
     SBF_REGISTER_RO(isr, uint32_t, 0x2C2,
@@ -7848,7 +7848,7 @@ struct Tsc {
         SBF_FIELD(g1_io1, 0:0, bool) 		// G1_IO1
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x14, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x14, uint32_t)
     // I/O analog switch control register
     // Offset +0x18
     SBF_REGISTER_RW(ioascr, uint32_t, 0x0,
@@ -7886,7 +7886,7 @@ struct Tsc {
         SBF_FIELD(g1_io1, 0:0, bool) 		// G1_IO1
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x1C, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x1C, uint32_t)
     // I/O sampling control register
     // Offset +0x20
     SBF_REGISTER_RW(ioscr, uint32_t, 0x0,
@@ -7924,7 +7924,7 @@ struct Tsc {
         SBF_FIELD(g1_io1, 0:0, bool) 		// G1_IO1
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x24, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x24, uint32_t)
     // I/O channel control register
     // Offset +0x28
     SBF_REGISTER_RW(ioccr, uint32_t, 0x0,
@@ -7962,7 +7962,7 @@ struct Tsc {
         SBF_FIELD(g1_io1, 0:0, bool) 		// G1_IO1
     )
     //  Alignment padding
-    SBF_REGISTER_RSVD(__padding_0x2C, uint32_t, 1)
+    SBF_REGISTER_RSVD(__padding_0x2C, uint32_t)
     // I/O group control status register
     // Offset +0x30
     SBF_REGISTER_RW(iogcsr, uint32_t, 0x0,
