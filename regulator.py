@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 
-import xml.etree.ElementTree as ET
+import argparse
 from copy import deepcopy
-import string
+from distutils.dir_util import mkpath
+import os
 import re
+import string
+import xml.etree.ElementTree as ET
 
 peripheral_defaults = dict()
 register_defaults = dict(width=32, 
@@ -23,7 +26,7 @@ access_mode_map = {'read-write':'RW',
                    'read-only':'RO',
                    'write-only':'WO'}
                         
-INDENT = " " * 4
+INDENT = " " * 2
 
 def indent(s, count=1):
     prefix = INDENT * count
@@ -33,9 +36,9 @@ def indent(s, count=1):
             lines[i] = prefix + lines[i]
     return '\n'.join(lines)
 
-def include_guard_token(filename):
-    filename = filename.replace(".h", "")
-    return "_%s_H_" % filename
+def include_guard_token(*parts):
+    middle = '_'.join([p.upper().replace('.','_') for p in parts])
+    return "_" + middle + "_"
 
 def clean_svd(s):
     return re.sub('\n\s*', ' ', s).replace('$', '\\$')
@@ -50,12 +53,15 @@ def svd_to_dict(element, defaults=None):
     return result
     
 def make_type_name(name):
-    return name.lower().capitalize()
+    subnames = name.lower().split('_')
+    return ''.join([sn.lower().capitalize() for sn in subnames])
 
 def make_instance_name(name):
     return name.lower()
 
 class Field(object):
+    template_fname = 'templates/field.ht'
+    
     def __init__(self, name, description, msb, lsb):
         self.name = name
         self.description = description
@@ -82,21 +88,57 @@ class Field(object):
     def __cmp__(self, other):
         return self.msb.__cmp__(other.msb)
         
-    def cpp_declaration(self):
-        template_fname = 'field_declaration.ht'
-        with open(template_fname, 'r') as f:
+    def to_cpp(self):
+
+        with open(self.template_fname, 'r') as f:
             template_string = f.read()
         
         replacements = dict(FIELD_NAME=make_instance_name(self.name),
         					MSB=self.msb, 
                             LSB=self.lsb,
                             FIELD_TYPE=self.type,
-                            FIELD_DESCRIPTION=self.description)
+                            FIELD_DESCRIPTION=self.description,
+                            INDENT=INDENT)
         template = string.Template(template_string)
         return template.safe_substitute(replacements)
         
-
+class Padding(object):
+    template_fname = 'templates/padding.ht'
+    
+    def __init__(self, offset_start, offset_end):
+        self.offset_start = offset_start
+        self.offset_end = offset_end
+        if (((offset_end - offset_start) % 4) == 0):
+            self.pad_type = 'uint32_t'
+            self.pad_size = 4
+        elif (((offset_end - offset_start) % 2) == 0):
+            self.pad_type = 'uint16_t'
+            self.pad_size = 2
+        else:
+            self.pad_type = 'uint8_t'
+            self.pad_size = 1
+        self.pad_count = (offset_end - offset_start)/self.pad_size
+            
+    
+    def __repr__(self):
+        return "<Padding: %s (x%d) [+0x%X - +0x%x]>" % \
+            (self.pad_type, self.pad_count, self.offset_start, self.offset_end)
+    
+    def to_cpp(self):
+        with open(self.template_fname, 'r') as f:
+            template_string = f.read()
+        
+        replacements = dict(PAD_OFFSET_START="0x%X" % (self.offset_start),
+                            PAD_OFFSET_END="0x%X" % (self.offset_end),
+                            PAD_TYPE=self.pad_type,
+                            PAD_COUNT=self.pad_count,
+                            INDENT=INDENT)
+        template = string.Template(template_string)
+        return template.safe_substitute(replacements)
+        
 class Register(object):
+    template_fname = 'templates/register.ht'
+    
     def __init__(self, name, description, offset, size, 
                  access_mode, reset_value, fields):
         self.name = name
@@ -125,23 +167,22 @@ class Register(object):
     def __repr__(self):
         return "<Register %s (+0x%X)>" % (self.name, self.offset)
         
-    def cpp_declaration(self):
+    def to_cpp(self):
         replacements = dict(REGISTER_NAME=make_instance_name(self.name),
                             DESCRIPTION=self.description,
                             OFFSET="0x%X" % self.offset,
                             ACCESS_MODE=self.access_mode,
                             STORAGE_TYPE=self.type,
-                            RESET_VALUE="0x%X" % self.reset_value)
-                            
-        template_fname = 'register_declaration.ht'
+                            RESET_VALUE="0x%X" % self.reset_value,
+                            INDENT=INDENT)
 
         if (len(self.fields) == 1):
             fields = indent('SBF_NO_FIELDS')
         else:
-            fields = indent("\n".join([field.cpp_declaration() for field in self.fields]))
+            fields = indent("\n".join([field.to_cpp() for field in self.fields]))
         replacements['FIELDS'] = fields
 
-        with open(template_fname, 'r') as f:
+        with open(self.template_fname, 'r') as f:
             template_string = f.read()        
         template = string.Template(template_string)
         return template.safe_substitute(replacements)
@@ -149,6 +190,8 @@ class Register(object):
 
 class Peripheral(object):
     cache = {}
+    template_fname='templates/peripheral.ht'
+    
     def __init__(self, name, description, base_address, registers, group_name, parent):
         self.name = name
         self.description = description
@@ -166,8 +209,8 @@ class Peripheral(object):
         # params['addressBlock'] = svd_to_dict(element.find('addressBlock'), defaults)
 
         if element.attrib.has_key('derivedFrom'):
-            template = deepcopy(cls.cache[element.attrib['derivedFrom']])
             params['parent'] = element.attrib['derivedFrom']            
+            template = deepcopy(cls.cache[params['parent']])
         else:
             regs = [Register.from_svd(r, defaults) for r in element.find('registers')]
             template = dict(registers=regs, parent='')
@@ -180,54 +223,42 @@ class Peripheral(object):
     def __repr__(self):
         return "<Peripheral %s (%s) @ 0x%08X>" % (self.name, self.group_name, self.base_address)
     
-    def cpp_class_declaration(self, template_fname='peripheral_class_declaration.ht'):
-        with open(template_fname, 'r') as f:
+    def to_cpp(self):
+        with open(self.template_fname, 'r') as f:
             template_string = f.read()
 
-        replacements = dict(PERIPHERAL_TYPE=make_type_name(self.group_name)) 
+        replacements = dict()
+        replacements['INDENT'] = INDENT
+        replacements['PERIPHERAL_GROUP'] = make_type_name(self.group_name)
+        replacements['PERIPHERAL_TYPE'] = make_type_name(self.name)
+        replacements['PERIPHERAL_NAME'] = make_instance_name(self.name)
+        replacements['BASE_ADDRESS'] = "0x%08X" % (self.base_address)
+        replacements['DESCRIPTION'] = self.description
+         
         reg_map = dict([(r.offset, r) for r in self.registers])
         offsets = reg_map.keys()
         offsets.sort()
         current_offset = 0
-        reg_decls = ""
+        cpp_regs = ""
         for target_offset in offsets:
             if current_offset < target_offset:
                 # Add padding
-                pad_byte_count = target_offset - current_offset
-                if (pad_byte_count % 4) != 0:
-                    raise RuntimeError('Unaligned padding required')
-                pad_word_count = pad_byte_count / 4
-                if pad_word_count > 1:
-                    reg_decls += indent("//  Alignment padding\nSBF_REG_ARRAY_RSVD(__padding_0x%X_to_0x%X, uint32_t, %u)\n" % \
-                        (current_offset, target_offset - 4, pad_word_count))
-                else:
-                    reg_decls += indent("//  Alignment padding\nSBF_REGISTER_RSVD(__padding_0x%X, uint32_t)\n" % \
-                        (current_offset))
-                current_offset += pad_byte_count
+                padding = Padding(current_offset, target_offset)
+                cpp_regs += indent(padding.to_cpp()) + "\n";
+                current_offset = target_offset
             reg = reg_map[target_offset]
-            reg_decls += indent(reg.cpp_declaration()) + "\n"
+            cpp_regs += indent(reg.to_cpp()) + "\n"
             current_offset += (reg.size / 8)
-        replacements['REGISTER_DECLARATIONS'] = reg_decls        
+        replacements['REGISTERS'] = cpp_regs        
 
         template = string.Template(template_string)
-        return template.safe_substitute(replacements)
-        
-    def cpp_instance_declaration(self, template_fname='peripheral_instance_declaration.ht'):
-        with open(template_fname, 'r') as f:
-            template_string = f.read()
-
-        replacements = dict(PERIPHERAL_TYPE=make_type_name(self.group_name))
-        replacements['PERIPHERAL_NAME'] = make_instance_name(self.name)
-        replacements['PERIPHERAL_NAME_CAPITALIZED'] = make_instance_name(self.name).capitalize()
-        replacements['BASE_ADDRESS'] = "0x%08X" % (self.base_address)
-        replacements['DESCRIPTION'] = self.description
-        template = string.Template(template_string)
-        return template.safe_substitute(replacements)
-        
-
+        return template.safe_substitute(replacements)      
 
 
 class Device(object):
+    device_file_template_fname = 'templates/device_file.ht'
+    peripheral_file_template_fname = 'templates/peripheral_file.ht'
+    
     def __init__(self, name, **kwargs):
         self.name = name
         self.__dict__.update(kwargs)
@@ -239,12 +270,7 @@ class Device(object):
         params = svd_to_dict(element, defaults)
         peripherals = [Peripheral.from_svd(p, svd_defaults) for p in element.iter('peripheral')]
         peripherals = sorted(peripherals, key=lambda p: p.name)
-        classes = {}
-        for p in peripherals:
-            if '' == getattr(p, 'parent', ''):
-                classes[p.group_name] = p
         params['peripherals'] = peripherals
-        params['peripheral_classes'] = classes
         name = params.pop('name')
         return Device(name, **params)
         
@@ -255,39 +281,64 @@ class Device(object):
     
     def __repr__(self):
         return "<Device %s>" % self.name
+    
+    def _file_replacements(self, fname):
+        replacements = dict()
+        replacements['NAMESPACE'] = make_type_name(self.name)
+        replacements['INCLUDE_GUARD_TOKEN'] = include_guard_token(self.name, fname)
+        return replacements
         
-    def cpp_declaration(self, template_fname='device_declaration.ht'):
-        with open(template_fname, 'r') as f:
+    def _generate_device_file(self, peripheral_header_fnames, output_path=''):
+        with open(self.device_file_template_fname, 'r') as f:
             template_string = f.read()
         
-        replacements = dict()
-        replacements['NAMESPACE_START'] = "namespace %s {" % make_type_name(self.name)
-        replacements['NAMESPACE_END'] = "} // namespace %s" % make_type_name(self.name)
-   
-        replacements['INCLUDE_GUARD_TOKEN'] = include_guard_token(self.name)  
-        pc_dec = '\n'.join([p.cpp_class_declaration() for p in 
-                            sorted(self.peripheral_classes.values(), key=lambda p: p.name)])
-        replacements['PERIPHERAL_CLASS_DECLARATIONS'] = pc_dec            
-        p_dec = '\n'.join([p.cpp_instance_declaration() for p in 
-                           sorted(self.peripherals, key=lambda p: p.name)])
-        replacements['PERIPHERAL_DECLARATIONS'] = p_dec
+        output_fname = self.name.lower() + ".h"
+        output_fpath = os.path.join(output_path, output_fname)
+        replacements = self._file_replacements(output_fname)
+        replacements['PERIPHERAL_INCLUDES'] = \
+            '\n'.join(['#include "%s"' % (n) for n in peripheral_header_fnames])
     
         template = string.Template(template_string)
-        return template.safe_substitute(replacements)
-            
+        with open(output_fpath, 'w') as f:
+            print "Writing " + output_fpath + "...",
+            f.write(template.safe_substitute(replacements))
+            print "done"
 
-    def cpp_definition(self, template_fname):
-        pass
-
-    def generate_header_file(self, fname=None):
-        if fname is None:
-            fname = self.name.lower() + ".h"
-        with open(fname, 'w') as f:
-            f.write(self.cpp_declaration())
+    def _generate_peripheral_files(self, output_path=''):
+        with open(self.peripheral_file_template_fname, 'r') as f:
+            template_string = f.read()
         
+        peripheral_header_fnames = []
+        for p in self.peripherals:
+            output_fname = self.name.lower() + "_" + p.name.lower() + ".h"
+            output_fpath = os.path.join(output_path, output_fname)
+            replacements = self._file_replacements(output_fname)
+            replacements['PERIPHERAL'] = p.to_cpp();
+        
+            template = string.Template(template_string)
+            with open(output_fpath, 'w') as f:
+                print "Writing " + output_fpath + "...",
+                f.write(template.safe_substitute(replacements))
+                print "done"
 
-dev = Device.from_svdfile('SVD/STM32L4x6.svd', svd_defaults)
-dev.generate_header_file('generated/stm32l4x6.h')
+            peripheral_header_fnames.append(output_fname)
+        return peripheral_header_fnames
+        
+    def generate_header_files(self, output_path=''):
+        fnames = self._generate_peripheral_files(output_path)
+        return self._generate_device_file(fnames, output_path)
 
 
+
+parser = argparse.ArgumentParser()
+parser.add_argument("svd_file", help="SVD input file")
+parser.add_argument("out_dir", help="Directory for generated files", default='')
+
+args = parser.parse_args()
+
+dev = Device.from_svdfile(args.svd_file, svd_defaults)
+
+if (args.out_dir != ''):
+    mkpath(args.out_dir)
+dev.generate_header_files(args.out_dir)
 

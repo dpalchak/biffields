@@ -1,0 +1,14 @@
+// ${PERIPHERAL_GROUP} group
+// ${PERIPHERAL_TYPE} registers
+// ${DESCRIPTION}
+struct ${PERIPHERAL_TYPE} {
+${INDENT}//Base addresses
+${INDENT}enum class BaseAddress : uintptr_t {
+${INDENT}${INDENT}k${PERIPHERAL_TYPE} = ${BASE_ADDRESS}
+${INDENT}}
+${INDENT}//Helper to get memory mapped instances
+${INDENT}static inline ${PERIPHERAL_TYPE}& instance() {
+${INDENT}${INDENT}return *reinterpret_cast<${PERIPHERAL_TYPE}*>(static_cast<uintptr_t>(BaseAddress::k${PERIPHERAL_TYPE}));
+${INDENT}}
+${REGISTERS}
+}; // ${PERIPHERAL_TYPE} registers

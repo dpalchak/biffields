@@ -1,15 +1,15 @@
 #ifndef ${INCLUDE_GUARD_TOKEN}
 #define ${INCLUDE_GUARD_TOKEN}
 
-#include "data/sbf/sbf_register.h"
+#include "data/sbf/sbf.h"
+#include <cstdint>
 
-${NAMESPACE_START}
+namespace ${NAMESPACE} {
 
-${PERIPHERAL_CLASS_DECLARATIONS}
+static_assert(false, "This file has not been validated");
 
-${PERIPHERAL_DECLARATIONS}
+${PERIPHERAL}
 
-${NAMESPACE_END}
-
+} // namespace ${NAMESPACE}
 
 #endif // ${INCLUDE_GUARD_TOKEN}

@@ -1,3 +1,0 @@
-// ${DESCRIPTION}
-constexpr uintptr_t kBaseAddress_${PERIPHERAL_NAME} = ${BASE_ADDRESS};
-${PERIPHERAL_TYPE} * const ${PERIPHERAL_NAME} = reinterpret_cast<${PERIPHERAL_TYPE} * const>(kBaseAddress_${PERIPHERAL_NAME}); 

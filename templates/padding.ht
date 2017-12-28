@@ -1,0 +1,2 @@
+//  Alignment padding
+SBF_RESERVED(__padding_${PAD_OFFSET_START}_to_${PAD_OFFSET_END}, ${PAD_TYPE}, ${PAD_COUNT})
